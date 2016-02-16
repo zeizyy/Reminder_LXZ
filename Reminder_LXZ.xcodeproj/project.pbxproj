@@ -15,6 +15,8 @@
 		43F057B11C6E417100875E98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43F057B01C6E417100875E98 /* Assets.xcassets */; };
 		43F057B41C6E417100875E98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43F057B21C6E417100875E98 /* LaunchScreen.storyboard */; };
 		43F057BF1C6E417200875E98 /* Reminder_LXZTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F057BE1C6E417200875E98 /* Reminder_LXZTests.swift */; };
+		E77C77E91C73C08F00123DD8 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C77E71C73C08F00123DD8 /* EventTableViewCell.swift */; };
+		E77C77ED1C73C5D400123DD8 /* EventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77C77EB1C73C5D400123DD8 /* EventTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,8 @@
 		43F057BA1C6E417200875E98 /* Reminder_LXZTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Reminder_LXZTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		43F057BE1C6E417200875E98 /* Reminder_LXZTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminder_LXZTests.swift; sourceTree = "<group>"; };
 		43F057C01C6E417200875E98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E77C77E71C73C08F00123DD8 /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		E77C77EB1C73C5D400123DD8 /* EventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +93,8 @@
 				43F057B21C6E417100875E98 /* LaunchScreen.storyboard */,
 				43F057B51C6E417100875E98 /* Info.plist */,
 				43F057A61C6E417100875E98 /* Reminder_LXZ.xcdatamodeld */,
+				E77C77E71C73C08F00123DD8 /* EventTableViewCell.swift */,
+				E77C77EB1C73C5D400123DD8 /* EventTableViewController.swift */,
 			);
 			path = Reminder_LXZ;
 			sourceTree = "<group>";
@@ -208,6 +214,8 @@
 				43F057A81C6E417100875E98 /* Reminder_LXZ.xcdatamodeld in Sources */,
 				43F057A51C6E417100875E98 /* AppDelegate.swift in Sources */,
 				43F057AA1C6E417100875E98 /* MasterViewController.swift in Sources */,
+				E77C77E91C73C08F00123DD8 /* EventTableViewCell.swift in Sources */,
+				E77C77ED1C73C5D400123DD8 /* EventTableViewController.swift in Sources */,
 				43F057AC1C6E417100875E98 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -398,6 +406,7 @@
 				43F057C51C6E417200875E98 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		43F057C61C6E417200875E98 /* Build configuration list for PBXNativeTarget "Reminder_LXZTests" */ = {
 			isa = XCConfigurationList;
@@ -406,6 +415,7 @@
 				43F057C81C6E417200875E98 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
