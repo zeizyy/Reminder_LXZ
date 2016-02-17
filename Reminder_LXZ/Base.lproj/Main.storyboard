@@ -29,7 +29,7 @@
                         <viewControllerLayoutGuide type="top" id="SYR-Wa-9uf"/>
                         <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="svH-Pt-448">
+                    <view key="view" contentMode="scaleToFill" id="svH-Pt-448" customClass="UIControl">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -42,17 +42,26 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="FPF-fm-9j9">
-                                        <rect key="frame" x="0.0" y="30" width="560" height="290"/>
+                                        <rect key="frame" x="0.0" y="30" width="560" height="269.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lvr-Fw-ZME">
+                                        <rect key="frame" x="0.0" y="299.5" width="560" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="N3B-zR-fIG">
                                         <rect key="frame" x="0.0" y="320" width="560" height="216"/>
                                         <date key="date" timeIntervalSinceReferenceDate="477340722.70025402">
                                             <!--2016-02-16 18:38:42 +0000-->
                                         </date>
+                                        <connections>
+                                            <action selector="datePickerAction:" destination="JEX-9P-axG" eventType="valueChanged" id="KnA-bS-iEZ"/>
+                                        </connections>
                                     </datePicker>
                                 </subviews>
                             </stackView>
@@ -64,11 +73,28 @@
                             <constraint firstItem="eTu-qI-opz" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="bXO-3r-3Yi"/>
                             <constraint firstItem="eTu-qI-opz" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="o5G-pw-Bag"/>
                         </constraints>
+                        <connections>
+                            <action selector="userTappedBackground:" destination="JEX-9P-axG" eventType="touchDown" id="qge-xS-2pu"/>
+                        </connections>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Detail" id="mOI-FS-AaM"/>
+                    <navigationItem key="navigationItem" title="Detail" id="mOI-FS-AaM">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="GNO-Gi-Kt0"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="81b-vy-f0i">
+                            <connections>
+                                <segue destination="bYq-Aa-0Os" kind="unwind" unwindAction="unwindToEventList:" id="hrN-Fd-IGy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="datePicker" destination="N3B-zR-fIG" id="621-M4-BXd"/>
+                        <outlet property="saveButton" destination="81b-vy-f0i" id="NAg-JO-bGn"/>
+                        <outlet property="selectedDate" destination="Lvr-Fw-ZME" id="TZN-VE-xXH"/>
+                        <outlet property="titleField" destination="9o1-gV-xav" id="DCV-Ee-tiK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
+                <exit id="bYq-Aa-0Os" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="709" y="129"/>
         </scene>
