@@ -11,10 +11,10 @@ import CoreData
 import Foundation
 
 class EventMO: NSManagedObject {
-    
+
     @NSManaged var title: String!
     @NSManaged var desc: String?
     @NSManaged var eventTime: NSDate!
     @NSManaged var createTime: NSDate!
-    
+
 }
