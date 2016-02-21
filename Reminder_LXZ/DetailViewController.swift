@@ -15,11 +15,12 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
+    @IBOutlet weak var descField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var selectedDate: UILabel!
     // TODO create a outlet for descField
 
-    var detailItem: AnyObject? {
+    var detailItem: EventClass? {
         didSet {
             // Update the view.
             self.configureView()
@@ -71,7 +72,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
 
     func configureView() {
         // Update the user interface for the detail item.
-        if let item = self.detailItem as! EventMO? {
+        if let item = self.detailItem {
             if let titleField = self.titleField {
                 titleField.text = item.title
             }
@@ -91,12 +92,11 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
         if saveButton === sender {
-            if let item = self.detailItem as! EventMO? {
-                item.title = titleField.text ?? ""
-                item.desc = "" // TODO
-                item.createTime = NSDate()
-                item.eventTime = datePicker.date
-            }
+            let title = titleField.text ?? ""
+            let desc = descField.text ?? ""
+            let createTime = NSDate()
+            let eventTime = datePicker.date
+            detailItem = EventClass(title: title, desc: desc, eventTime: createTime, createTime: eventTime)
         } else {
             detailItem = nil
         }

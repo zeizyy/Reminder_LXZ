@@ -16,5 +16,13 @@ class EventMO: NSManagedObject {
     @NSManaged var desc: String?
     @NSManaged var eventTime: NSDate!
     @NSManaged var createTime: NSDate!
+    
+    convenience init(title: String!, desc: String?, eventTime: NSDate!, createTime: NSDate!, entity: NSEntityDescription, insertIntoManagedObjectContext context : NSManagedObjectContext!){
+        self.init(entity: entity, insertIntoManagedObjectContext: context)
+        self.title = title
+        self.desc = desc
+        self.eventTime = eventTime
+        self.createTime = createTime
+    }
 
 }

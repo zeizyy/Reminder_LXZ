@@ -20,8 +20,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
-        self.navigationItem.rightBarButtonItem = addButton
+//        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
+//        self.navigationItem.rightBarButtonItem = addButton
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
@@ -39,7 +39,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     // TODO pass this default new item to detailView, without saving the item to core data
-    func insertNewObject(sender: AnyObject) {
+    func insertNewObject(sender: AnyObject, detailItem: EventClass) {
         let context = self.fetchedResultsController.managedObjectContext
         let entity = self.fetchedResultsController.fetchRequest.entity!
         let newManagedObject = NSEntityDescription.insertNewObjectForEntityForName(entity.name!, inManagedObjectContext: context) as! EventMO
@@ -50,11 +50,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //        newManagedObject.setValue(NSDate(), forKey: "createTime")
 
         // use model to hold data instead of KVC
-        newManagedObject.title = "Title"
-        newManagedObject.desc = ""
-        newManagedObject.eventTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
-        newManagedObject.createTime = NSDate()
-
+        newManagedObject.title = detailItem.title
+        newManagedObject.desc = detailItem.desc
+        newManagedObject.eventTime = detailItem.eventTime
+        newManagedObject.createTime = detailItem.createTime
         // Save the context.
         do {
             try context.save()
@@ -69,32 +68,47 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+
         if segue.identifier == "showDetail" {
+            let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let object = self.fetchedResultsController.objectAtIndexPath(indexPath)
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
 
                 // pass the object to the target controller
-                controller.detailItem = object
+                controller.detailItem = EventClass(event: object as! EventMO)
 
-                // this overrides the cancel button set in the storyboard
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-                controller.navigationItem.leftItemsSupplementBackButton = true
+    
             }
+            // this overrides the cancel button set in the storyboard
+            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            controller.navigationItem.leftItemsSupplementBackButton = true
+
+        } else if segue.identifier == "createDetail" {
+            let controller = segue.destinationViewController as! DetailViewController
+            // this overrides the cancel button set in the storyboard
+            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            controller.navigationItem.leftItemsSupplementBackButton = true
         }
+        
     }
 
     // getting back to masterView i.e. receiving segues
     @IBAction func unwindToEventList(sender: UIStoryboardSegue) {
         // if the seque is coming from detail view AND the item is set, then save the edit
-        if let sourceViewController = sender.sourceViewController as? DetailViewController, _ = sourceViewController.detailItem {
-            // Add a new event
-            let context = self.fetchedResultsController.managedObjectContext
-
-            // save any changed made to the detailItem:EventMO in detailView
-            do {
-                try context.save()
-            } catch {
+        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
+//             Add a new event
+            if let _ = tableView.indexPathForSelectedRow {
+                let context = self.fetchedResultsController.managedObjectContext
+                
+                // save any changed made to the detailItem:EventMO in detailView
+                do {
+                    try context.save()
+                } catch {
+                }
+            } else {
+                insertNewObject(self, detailItem: detailItem)
             }
         }
     }
