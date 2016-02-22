@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class DetailViewController: UIViewController, UITextFieldDelegate {
 
@@ -20,12 +21,14 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var selectedDate: UILabel!
     // TODO create a outlet for descField
 
-    var detailItem: EventClass? {
+    var detailItem: EventMO? {
         didSet {
             // Update the view.
             self.configureView()
         }
     }
+
+    var context: NSManagedObjectContext!
 
     // MARK: Events
 
@@ -92,13 +95,20 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
         if saveButton === sender {
-            let title = titleField.text ?? ""
-            let desc = descField.text ?? ""
-            let createTime = NSDate()
-            let eventTime = datePicker.date
-            detailItem = EventClass(title: title, desc: desc, eventTime: createTime, createTime: eventTime)
-        } else {
-            detailItem = nil
+            if let item = self.detailItem {
+                item.title = titleField.text ?? ""
+                item.desc = "" // TODO
+                item.createTime = NSDate()
+                item.eventTime = datePicker.date
+            }
+        } else { // cancelButton
+//            context.deleteObject(detailItem!)
+            context.rollback()
+        }
+
+        do {
+            try context.save()
+        } catch {
         }
     }
 

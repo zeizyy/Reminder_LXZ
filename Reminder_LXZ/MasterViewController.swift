@@ -20,8 +20,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
-//        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
-//        self.navigationItem.rightBarButtonItem = addButton
+        //        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
+        //        self.navigationItem.rightBarButtonItem = addButton
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
@@ -38,8 +38,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Dispose of any resources that can be recreated.
     }
 
-    // TODO pass this default new item to detailView, without saving the item to core data
-    func insertNewObject(sender: AnyObject, detailItem: EventClass) {
+    func insertNewObject(sender: AnyObject) -> EventMO {
         let context = self.fetchedResultsController.managedObjectContext
         let entity = self.fetchedResultsController.fetchRequest.entity!
         let newManagedObject = NSEntityDescription.insertNewObjectForEntityForName(entity.name!, inManagedObjectContext: context) as! EventMO
@@ -50,25 +49,17 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //        newManagedObject.setValue(NSDate(), forKey: "createTime")
 
         // use model to hold data instead of KVC
-        newManagedObject.title = detailItem.title
-        newManagedObject.desc = detailItem.desc
-        newManagedObject.eventTime = detailItem.eventTime
-        newManagedObject.createTime = detailItem.createTime
-        // Save the context.
-        do {
-            try context.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            //print("Unresolved error \(error), \(error.userInfo)")
-            abort()
-        }
+        newManagedObject.title = "Title"
+        newManagedObject.desc = ""
+        newManagedObject.eventTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
+        newManagedObject.createTime = NSDate()
+        return newManagedObject
     }
 
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
+
 
         if segue.identifier == "showDetail" {
             let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
@@ -77,40 +68,53 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
 
                 // pass the object to the target controller
-                controller.detailItem = EventClass(event: object as! EventMO)
-
-    
+                controller.detailItem = object as? EventMO
             }
+            controller.context = self.fetchedResultsController.managedObjectContext
+
             // this overrides the cancel button set in the storyboard
-            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-            controller.navigationItem.leftItemsSupplementBackButton = true
+//            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+//            controller.navigationItem.leftItemsSupplementBackButton = true
 
         } else if segue.identifier == "createDetail" {
             let controller = segue.destinationViewController as! DetailViewController
             // this overrides the cancel button set in the storyboard
-            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-            controller.navigationItem.leftItemsSupplementBackButton = true
+            controller.detailItem = insertNewObject(sender!)
+//            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+//            controller.navigationItem.leftItemsSupplementBackButton = true
+
+            controller.context = self.fetchedResultsController.managedObjectContext
+
         }
-        
+
+
     }
 
     // getting back to masterView i.e. receiving segues
     @IBAction func unwindToEventList(sender: UIStoryboardSegue) {
-        // if the seque is coming from detail view AND the item is set, then save the edit
-        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
-//             Add a new event
-            if let _ = tableView.indexPathForSelectedRow {
-                let context = self.fetchedResultsController.managedObjectContext
-                
-                // save any changed made to the detailItem:EventMO in detailView
-                do {
-                    try context.save()
-                } catch {
-                }
-            } else {
-                insertNewObject(self, detailItem: detailItem)
-            }
-        }
+//        // if the seque is coming from detail view AND the item is set, then save the edit
+//        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
+//            //             Add a new event
+////            if let _ = tableView.indexPathForSelectedRow {
+//                let context = self.fetchedResultsController.managedObjectContext
+//                
+//                // save any changed made to the detailItem:EventMO in detailView
+//                do {
+//                    try context.save()
+//                } catch {
+//                }
+////            } else {
+//                //                insertNewObject(self, detailItem: detailItem)
+////            }
+//        } else {
+//            let context = self.fetchedResultsController.managedObjectContext
+//            
+//            context.deleteObject(sender.sourceViewController.detailItem)
+//            do {
+//                try context.save()
+//            } catch {
+//            }
+//        }
     }
 
     // MARK: - Table View

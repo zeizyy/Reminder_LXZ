@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		435E0DF31C7974B100794B24 /* EventClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435E0DF21C7974B100794B24 /* EventClass.swift */; };
 		43F057A51C6E417100875E98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F057A41C6E417100875E98 /* AppDelegate.swift */; };
 		43F057A81C6E417100875E98 /* Reminder_LXZ.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 43F057A61C6E417100875E98 /* Reminder_LXZ.xcdatamodeld */; };
 		43F057AA1C6E417100875E98 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F057A91C6E417100875E98 /* MasterViewController.swift */; };
@@ -31,7 +30,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		435E0DF21C7974B100794B24 /* EventClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventClass.swift; sourceTree = "<group>"; };
 		43F057A11C6E417100875E98 /* Reminder_LXZ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reminder_LXZ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43F057A41C6E417100875E98 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43F057A71C6E417100875E98 /* Reminder_LXZ.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Reminder_LXZ.xcdatamodel; sourceTree = "<group>"; };
@@ -91,7 +89,6 @@
 				43F057A91C6E417100875E98 /* MasterViewController.swift */,
 				43F057AB1C6E417100875E98 /* DetailViewController.swift */,
 				43F057AD1C6E417100875E98 /* Main.storyboard */,
-				435E0DF21C7974B100794B24 /* EventClass.swift */,
 				43F057B01C6E417100875E98 /* Assets.xcassets */,
 				43F057B21C6E417100875E98 /* LaunchScreen.storyboard */,
 				43F057B51C6E417100875E98 /* Info.plist */,
@@ -216,7 +213,6 @@
 			files = (
 				43F057A81C6E417100875E98 /* Reminder_LXZ.xcdatamodeld in Sources */,
 				43F057A51C6E417100875E98 /* AppDelegate.swift in Sources */,
-				435E0DF31C7974B100794B24 /* EventClass.swift in Sources */,
 				E77C77F01C7410AB00123DD8 /* EventMO.swift in Sources */,
 				43F057AA1C6E417100875E98 /* MasterViewController.swift in Sources */,
 				E77C77E91C73C08F00123DD8 /* EventTableViewCell.swift in Sources */,
