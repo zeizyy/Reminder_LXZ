@@ -96,7 +96,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         if let selectedDate = self.selectedDate {
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-            let strDate = dateFormatter.stringFromDate(datePicker.date)
+            var strDate = dateFormatter.stringFromDate(datePicker.date)
             selectedDate.text = strDate
         }
     }

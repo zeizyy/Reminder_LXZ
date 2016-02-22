@@ -49,7 +49,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //        newManagedObject.setValue(NSDate(), forKey: "createTime")
 
         // use model to hold data instead of KVC
-        newManagedObject.title = "Title"
+        newManagedObject.title = ""
         newManagedObject.desc = ""
         newManagedObject.eventTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
         newManagedObject.createTime = NSDate()
