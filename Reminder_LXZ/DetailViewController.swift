@@ -9,14 +9,14 @@
 import UIKit
 import CoreData
 
-class DetailViewController: UIViewController, UITextFieldDelegate {
-
+class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
+    let placeholder = "Description"
 
     // MARK: Properties
 
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
-    @IBOutlet weak var descField: UITextField!
+    @IBOutlet weak var descField: UITextView!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var selectedDate: UILabel!
     // TODO create a outlet for descField
@@ -38,7 +38,35 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
         self.configureView()
 
         titleField.delegate = self
-        // TODO set delegate for descField
+        
+        descField.delegate = self
+        
+        // add placeholder for textView
+        if(descField.text.isEmpty){
+            descField.text = placeholder
+            descField.textColor = UIColor.lightGrayColor()
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        titleField.becomeFirstResponder()
+    }
+    
+    // remove the hard-coded placeholder when textView is being edited
+    func textViewDidBeginEditing(textView: UITextView) {
+        if textView.textColor == UIColor.lightGrayColor() {
+            textView.text = nil
+            textView.textColor = UIColor.blackColor()
+        }
+    }
+    
+    // add the hard-coded placeholder when end editing
+    func textViewDidEndEditing(textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholder
+            textView.textColor = UIColor.lightGrayColor()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -84,7 +112,9 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
                 datePicker.setDate(date!, animated: false)
                 updateSelectedDateFromDatePicker()
             }
-            // TODO set descField content
+            if let descField = self.descField {
+                descField.text = item.desc
+            }
         } else {
             // create a new object
         }
@@ -97,7 +127,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
         if saveButton === sender {
             if let item = self.detailItem {
                 item.title = titleField.text ?? ""
-                item.desc = "" // TODO
+                item.desc = descField.text ?? ""
+                print(descField.text)
                 item.createTime = NSDate()
                 item.eventTime = datePicker.date
             }
