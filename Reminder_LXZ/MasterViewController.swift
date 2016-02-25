@@ -77,15 +77,16 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             controller.context = self.fetchedResultsController.managedObjectContext
 
             // this overrides the cancel button set in the storyboard
-//            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-//            controller.navigationItem.leftItemsSupplementBackButton = true
+            //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            //            controller.navigationItem.leftItemsSupplementBackButton = true
 
         } else if segue.identifier == "createDetail" {
-            let controller = segue.destinationViewController as! DetailViewController
-            // this overrides the cancel button set in the storyboard
+            let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             controller.detailItem = insertNewObject(sender!)
-//            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-//            controller.navigationItem.leftItemsSupplementBackButton = true
+
+            // this overrides the cancel button set in the storyboard
+            //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            //            controller.navigationItem.leftItemsSupplementBackButton = true
 
             controller.context = self.fetchedResultsController.managedObjectContext
 
@@ -96,29 +97,29 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     // getting back to masterView i.e. receiving segues
     @IBAction func unwindToEventList(sender: UIStoryboardSegue) {
-//        // if the seque is coming from detail view AND the item is set, then save the edit
-//        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
-//            //             Add a new event
-////            if let _ = tableView.indexPathForSelectedRow {
-//                let context = self.fetchedResultsController.managedObjectContext
-//                
-//                // save any changed made to the detailItem:EventMO in detailView
-//                do {
-//                    try context.save()
-//                } catch {
-//                }
-////            } else {
-//                //                insertNewObject(self, detailItem: detailItem)
-////            }
-//        } else {
-//            let context = self.fetchedResultsController.managedObjectContext
-//            
-//            context.deleteObject(sender.sourceViewController.detailItem)
-//            do {
-//                try context.save()
-//            } catch {
-//            }
-//        }
+        //        // if the seque is coming from detail view AND the item is set, then save the edit
+        //        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
+        //            //             Add a new event
+        ////            if let _ = tableView.indexPathForSelectedRow {
+        //                let context = self.fetchedResultsController.managedObjectContext
+        //
+        //                // save any changed made to the detailItem:EventMO in detailView
+        //                do {
+        //                    try context.save()
+        //                } catch {
+        //                }
+        ////            } else {
+        //                //                insertNewObject(self, detailItem: detailItem)
+        ////            }
+        //        } else {
+        //            let context = self.fetchedResultsController.managedObjectContext
+        //
+        //            context.deleteObject(sender.sourceViewController.detailItem)
+        //            do {
+        //                try context.save()
+        //            } catch {
+        //            }
+        //        }
     }
 
     // MARK: - Table View
