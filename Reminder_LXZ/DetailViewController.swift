@@ -11,64 +11,56 @@ import CoreData
 
 class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     let placeholder = "Description"
-    
+
     // MARK: Properties
-    
+
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
-    //  @IBOutlet weak var datePicker: UIDatePicker!
-    @IBOutlet weak var selectedDate: UITextField!        // due time for the event
-    @IBOutlet weak var reminderDate: UITextField!        // reminder time for the event
-    
+    @IBOutlet weak var selectedDate: UITextField!
+    // due time for the event
+    @IBOutlet weak var reminderDate: UITextField!
+    // reminder time for the event
+
     let dateFormatter = NSDateFormatter()
-    
-    var timeSelected: UITextField!    // help identify which time selected
-    
-    // TODO create a outlet for descField
-    
+
+    var timeSelected: UITextField!
+    // help identify which time selected
+
     var detailItem: EventMO? {
         didSet {
             // Update the view.
             self.configureView()
         }
     }
-    
+
     var context: NSManagedObjectContext!
-    
+
     // MARK: Events
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         self.configureView()
-        
+
         titleField.delegate = self
-        
+
         descField.delegate = self
-        
+
         // add placeholder for textView
-        if(descField.text.isEmpty){
+        if (descField.text.isEmpty) {
             descField.text = placeholder
             descField.textColor = UIColor.lightGrayColor()
         }
-        
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        
-        if let detailItem = detailItem {
-            titleField.text = detailItem.title
-            descField.text = detailItem.desc
-            selectedDate.text = dateFormatter.stringFromDate(detailItem.eventTime)
-            reminderDate.text = dateFormatter.stringFromDate(detailItem.reminderTime)
-            
-        }
+
     }
-    
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         titleField.becomeFirstResponder()
     }
-    
+
     // remove the hard-coded placeholder when textView is being edited
     func textViewDidBeginEditing(textView: UITextView) {
         if textView.textColor == UIColor.lightGrayColor() {
@@ -76,7 +68,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             textView.textColor = UIColor.blackColor()
         }
     }
-    
+
     // add the hard-coded placeholder when end editing
     func textViewDidEndEditing(textView: UITextView) {
         if textView.text.isEmpty {
@@ -84,30 +76,31 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             textView.textColor = UIColor.lightGrayColor()
         }
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
+
+
     /* handle two date fields*/
     @IBAction func dateEditing(sender: UITextField) {
-        let datePickerView  : UIDatePicker = UIDatePicker()
+        let datePickerView: UIDatePicker = UIDatePicker()
         sender.inputView = datePickerView
         timeSelected = sender
         datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
         //       datePicker.addTarget(self, action: "handleDatePicker:", forControlEvents: UIControlEvents.AllEvents)
     }
-    
+
     // when datePicker changes
     func datePickerAction(sender: UIDatePicker) {
         //   updateSelectedDateFromDatePicker()
-        if let timeSelected = self.timeSelected {     // mark: was selectedDate
+        if let timeSelected = self.timeSelected {
+            // mark: was selectedDate
             let strDate = dateFormatter.stringFromDate(sender.date)
             //            selectedDate.text = strDate
             timeSelected.text = strDate
-            
+
 //            if timeSelected == self.reminderDate {
 //                self.detailItem?.reminderTime = sender.date
 //            } else if timeSelected == self.selectedDate {
@@ -115,20 +108,20 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
 //            }
         }
     }
-    
+
     // return key pressed while editing a text field.
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true;
     }
-    
+
     // dismiss keyboard when user taps background
     @IBAction func userTappedBackground(sender: AnyObject) {
         view.endEditing(true)
     }
-    
+
     // MARK: Helper methods
-    
+
     //    func updateSelectedDateFromDatePicker() {
     //        if let timeSelected = self.timeSelected {     // mark: was selectedDate
     //            let dateFormatter = NSDateFormatter()
@@ -138,7 +131,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     //            timeSelected.text = strDate
     //        }
     //    }
-    
+
     func configureView() {
         // Update the user interface for the detail item.
         if let item = self.detailItem {
@@ -162,11 +155,11 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             }
         }
     }
-    
+
     // MARK: Navigation
-    
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
+
         if saveButton === sender {
             if let item = self.detailItem {
                 item.title = titleField.text ?? ""
@@ -175,18 +168,19 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
                 item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
             }
-        } else { // cancelButton
+        } else {
+            // cancelButton
             //            context.deleteObject(detailItem!)
             context.rollback()
         }
-        
+
         do {
             try context.save()
         } catch {
             print("unable to save!")
         }
     }
-    
-    
+
+
 }
 
