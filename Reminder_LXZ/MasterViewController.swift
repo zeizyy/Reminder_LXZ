@@ -70,7 +70,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-                print("we're at master view: " + dateFormatter.stringFromDate(((object as? EventMO)?.reminderTime)!))
+                // print("we're at master view: " + dateFormatter.stringFromDate(((object as? EventMO)?.reminderTime)!))
                 // pass the object to the target controller
                 controller.detailItem = object as? EventMO
             }

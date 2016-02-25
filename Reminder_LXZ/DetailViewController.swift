@@ -94,10 +94,20 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     /* handle two date fields*/
     @IBAction func dateEditing(sender: UITextField) {
         let datePickerView: UIDatePicker = UIDatePicker()
+        
+        // set default display of datePicker to current selected time
+        var displayTime  = NSDate()
+        if sender == self.selectedDate {
+            displayTime = (self.detailItem?.eventTime)!
+        } else if sender == self.reminderDate {
+            displayTime = (self.detailItem?.reminderTime)!
+        }
+        datePickerView.setDate(displayTime, animated: false)
+        
+        // link to datePicker
         sender.inputView = datePickerView
         timeSelected = sender
         datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
-        //       datePicker.addTarget(self, action: "handleDatePicker:", forControlEvents: UIControlEvents.AllEvents)
     }
 
     // when datePicker changes
