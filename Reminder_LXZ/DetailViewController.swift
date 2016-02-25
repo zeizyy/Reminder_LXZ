@@ -54,6 +54,14 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         }
         
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        if let detailItem = detailItem {
+            titleField.text = detailItem.title
+            descField.text = detailItem.desc
+            selectedDate.text = dateFormatter.stringFromDate(detailItem.eventTime)
+            reminderDate.text = dateFormatter.stringFromDate(detailItem.reminderTime)
+            
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
