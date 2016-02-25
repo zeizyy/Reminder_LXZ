@@ -41,7 +41,7 @@
                                             <constraint firstAttribute="height" constant="30" id="LA1-Ij-hZz"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <connections>
                                             <action selector="textFieldDidChange:" destination="JEX-9P-axG" eventType="editingChanged" id="Fiu-l3-UWn"/>
                                         </connections>
