@@ -68,6 +68,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 let object = self.fetchedResultsController.objectAtIndexPath(indexPath)
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
 
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+                print("we're at master view: " + dateFormatter.stringFromDate(((object as? EventMO)?.reminderTime)!))
                 // pass the object to the target controller
                 controller.detailItem = object as? EventMO
             }

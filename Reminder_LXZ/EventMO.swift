@@ -18,13 +18,13 @@ class EventMO: NSManagedObject {
     @NSManaged var reminderTime: NSDate!    // when the reminder should be triggered
     @NSManaged var createTime: NSDate!
     
-    convenience init(title: String!, desc: String?, eventTime: NSDate!, reminderTime: NSDate!, createTime: NSDate!, entity: NSEntityDescription, insertIntoManagedObjectContext context : NSManagedObjectContext!){
-        self.init(entity: entity, insertIntoManagedObjectContext: context)
-        self.title = title
-        self.desc = desc
-        self.eventTime = eventTime
-        self.reminderTime = reminderTime
-        self.createTime = createTime
-    }
+//    convenience init(title: String!, desc: String?, eventTime: NSDate!, reminderTime: NSDate!, createTime: NSDate!, entity: NSEntityDescription, insertIntoManagedObjectContext context : NSManagedObjectContext!){
+//        self.init(entity: entity, insertIntoManagedObjectContext: context)
+//        self.title = title
+//        self.desc = desc
+//        self.eventTime = eventTime
+//        self.reminderTime = reminderTime
+//        self.createTime = createTime
+//    }
 
 }

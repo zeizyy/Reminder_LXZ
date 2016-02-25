@@ -11,36 +11,38 @@ import CoreData
 
 class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     let placeholder = "Description"
-
+    
     // MARK: Properties
-
+    
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
-  //  @IBOutlet weak var datePicker: UIDatePicker!
+    //  @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var selectedDate: UITextField!        // due time for the event
     @IBOutlet weak var reminderDate: UITextField!        // reminder time for the event
+    
+    let dateFormatter = NSDateFormatter()
     
     var timeSelected: UITextField!    // help identify which time selected
     
     // TODO create a outlet for descField
-
+    
     var detailItem: EventMO? {
         didSet {
             // Update the view.
             self.configureView()
         }
     }
-
+    
     var context: NSManagedObjectContext!
-
+    
     // MARK: Events
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
-
+        
         titleField.delegate = self
         
         descField.delegate = self
@@ -51,6 +53,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             descField.textColor = UIColor.lightGrayColor()
         }
         
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -73,7 +76,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             textView.textColor = UIColor.lightGrayColor()
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -86,86 +89,96 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         sender.inputView = datePickerView
         timeSelected = sender
         datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
- //       datePicker.addTarget(self, action: "handleDatePicker:", forControlEvents: UIControlEvents.AllEvents)
+        //       datePicker.addTarget(self, action: "handleDatePicker:", forControlEvents: UIControlEvents.AllEvents)
     }
     
     // when datePicker changes
-    @IBAction func datePickerAction(sender: UIDatePicker) {
-     //   updateSelectedDateFromDatePicker()
+    func datePickerAction(sender: UIDatePicker) {
+        //   updateSelectedDateFromDatePicker()
         if let timeSelected = self.timeSelected {     // mark: was selectedDate
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
             let strDate = dateFormatter.stringFromDate(sender.date)
             //            selectedDate.text = strDate
             timeSelected.text = strDate
+            
+//            if timeSelected == self.reminderDate {
+//                self.detailItem?.reminderTime = sender.date
+//            } else if timeSelected == self.selectedDate {
+//                self.detailItem?.eventTime = sender.date
+//            }
         }
     }
-
+    
     // return key pressed while editing a text field.
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true;
     }
-
+    
     // dismiss keyboard when user taps background
     @IBAction func userTappedBackground(sender: AnyObject) {
         view.endEditing(true)
     }
-
+    
     // MARK: Helper methods
-
-//    func updateSelectedDateFromDatePicker() {
-//        if let timeSelected = self.timeSelected {     // mark: was selectedDate
-//            let dateFormatter = NSDateFormatter()
-//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-//            var strDate = dateFormatter.stringFromDate(sender.date)
-////            selectedDate.text = strDate
-//            timeSelected.text = strDate
-//        }
-//    }
-
+    
+    //    func updateSelectedDateFromDatePicker() {
+    //        if let timeSelected = self.timeSelected {     // mark: was selectedDate
+    //            let dateFormatter = NSDateFormatter()
+    //            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+    //            var strDate = dateFormatter.stringFromDate(sender.date)
+    ////            selectedDate.text = strDate
+    //            timeSelected.text = strDate
+    //        }
+    //    }
+    
     func configureView() {
         // Update the user interface for the detail item.
         if let item = self.detailItem {
             if let titleField = self.titleField {
                 titleField.text = item.title
             }
-//            let date = item.eventTime
-//            if let datePicker = self.datePicker {
-//                datePicker.setDate(date!, animated: false)
-//                updateSelectedDateFromDatePicker()
-//            }
+            //            let date = item.eventTime
+            //            if let datePicker = self.datePicker {
+            //                datePicker.setDate(date!, animated: false)
+            //                updateSelectedDateFromDatePicker()
+            //            }
+            if let selectedDate = self.selectedDate {
+                print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
+                selectedDate.text = dateFormatter.stringFromDate(item.eventTime)
+            }
+            if let reminderDate = self.reminderDate {
+                reminderDate.text = dateFormatter.stringFromDate(item.reminderTime)
+            }
             if let descField = self.descField {
                 descField.text = item.desc
             }
-        } else {
-            // create a new object
         }
     }
-
+    
     // MARK: Navigation
-
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
+        
         if saveButton === sender {
             if let item = self.detailItem {
                 item.title = titleField.text ?? ""
                 item.desc = descField.text ?? ""
-                print(descField.text)
                 item.createTime = NSDate()
-  //              item.eventTime = datePicker.date
+                item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
+                item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
             }
         } else { // cancelButton
-//            context.deleteObject(detailItem!)
+            //            context.deleteObject(detailItem!)
             context.rollback()
         }
-
+        
         do {
             try context.save()
         } catch {
+            print("unable to save!")
         }
     }
-
-
+    
+    
 }
 
