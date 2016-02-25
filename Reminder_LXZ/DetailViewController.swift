@@ -127,6 +127,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 displayString = "Due at: " + strDate
             }
             timeSelected.text = displayString
+
         }
     }
     
@@ -158,15 +159,6 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
 
     // MARK: Helper methods
 
-    //    func updateSelectedDateFromDatePicker() {
-    //        if let timeSelected = self.timeSelected {     // mark: was selectedDate
-    //            let dateFormatter = NSDateFormatter()
-    //            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-    //            var strDate = dateFormatter.stringFromDate(sender.date)
-    ////            selectedDate.text = strDate
-    //            timeSelected.text = strDate
-    //        }
-    //    }
 
     func configureView() {
         // Update the user interface for the detail item.
