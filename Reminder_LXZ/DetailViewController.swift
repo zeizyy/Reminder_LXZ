@@ -42,6 +42,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+
         self.configureView()
 
         titleField.delegate = self
@@ -99,13 +100,16 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             // mark: was selectedDate
             let strDate = dateFormatter.stringFromDate(sender.date)
             //            selectedDate.text = strDate
-            timeSelected.text = strDate
+            var displayString = ""
 
-//            if timeSelected == self.reminderDate {
-//                self.detailItem?.reminderTime = sender.date
-//            } else if timeSelected == self.selectedDate {
-//                self.detailItem?.eventTime = sender.date
-//            }
+            if timeSelected == self.reminderDate {
+                self.detailItem?.reminderTime = sender.date
+                displayString = "Remind me at: " + strDate
+            } else if timeSelected == self.selectedDate {
+                self.detailItem?.eventTime = sender.date
+                displayString = "Due at: " + strDate
+            }
+            timeSelected.text = displayString
         }
     }
 
@@ -144,11 +148,13 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             //                updateSelectedDateFromDatePicker()
             //            }
             if let selectedDate = self.selectedDate {
-                print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
-                selectedDate.text = dateFormatter.stringFromDate(item.eventTime)
+   //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
+                let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
+                selectedDate.text = "Due at: " + selectedDateString
             }
             if let reminderDate = self.reminderDate {
-                reminderDate.text = dateFormatter.stringFromDate(item.reminderTime)
+                let reminderDateString = dateFormatter.stringFromDate(item.reminderTime)
+                reminderDate.text = "Remind me at: " + reminderDateString
             }
             if let descField = self.descField {
                 descField.text = item.desc
@@ -165,8 +171,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 item.title = titleField.text ?? ""
                 item.desc = descField.text ?? ""
                 item.createTime = NSDate()
-                item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
-                item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
+                //item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
+                //item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
             }
         } else {
             // cancelButton
