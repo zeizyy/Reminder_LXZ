@@ -54,6 +54,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             descField.text = placeholder
             descField.textColor = UIColor.lightGrayColor()
         }
+        
+        checkValidEvent()
 
     }
 
@@ -62,6 +64,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         titleField.becomeFirstResponder()
     }
 
+    
     // remove the hard-coded placeholder when textView is being edited
     func textViewDidBeginEditing(textView: UITextView) {
         if textView.textColor == UIColor.lightGrayColor() {
@@ -76,6 +79,10 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             textView.text = placeholder
             textView.textColor = UIColor.lightGrayColor()
         }
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+        checkValidEvent()
     }
 
     override func didReceiveMemoryWarning() {
@@ -112,7 +119,15 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             timeSelected.text = displayString
         }
     }
-
+    
+//    func textFieldDidBeginEditing(textField: UITextField) {
+//        checkValidEvent()
+//    }
+    
+    @IBAction func textFieldDidChange(sender: UITextField) {
+        checkValidEvent()
+    }
+    
     // return key pressed while editing a text field.
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -122,6 +137,13 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     // dismiss keyboard when user taps background
     @IBAction func userTappedBackground(sender: AnyObject) {
         view.endEditing(true)
+    }
+    
+    func checkValidEvent(){
+        let title = titleField.text ?? ""
+        let desc = descField.text ?? ""
+        let descColor = descField.textColor == UIColor.lightGrayColor()
+        saveButton.enabled = !title.isEmpty && !desc.isEmpty && !descColor
     }
 
     // MARK: Helper methods
