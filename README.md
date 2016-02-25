@@ -2,7 +2,7 @@
 An IOS Renminder App by Vivian Liu, Qian Xiong and Yuanyang Zheng.
 
 ## Standard Features
-- Has feature to add/edit/delete an event.
+- Has feature to add/edit/delete an event according to the project requirement.
 - There is a list showing events created.
 
 ## Extra Features
