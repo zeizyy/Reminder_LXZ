@@ -52,6 +52,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         newManagedObject.title = ""
         newManagedObject.desc = ""
         newManagedObject.eventTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
+        newManagedObject.reminderTime = NSDate()
         newManagedObject.createTime = NSDate()
         return newManagedObject
     }

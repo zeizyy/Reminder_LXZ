@@ -17,8 +17,12 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
-    @IBOutlet weak var datePicker: UIDatePicker!
-    @IBOutlet weak var selectedDate: UILabel!
+  //  @IBOutlet weak var datePicker: UIDatePicker!
+    @IBOutlet weak var selectedDate: UITextField!        // due time for the event
+    @IBOutlet weak var reminderDate: UITextField!        // reminder time for the event
+    
+    var timeSelected: UITextField!    // help identify which time selected
+    
     // TODO create a outlet for descField
 
     var detailItem: EventMO? {
@@ -46,6 +50,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             descField.text = placeholder
             descField.textColor = UIColor.lightGrayColor()
         }
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -73,10 +78,27 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    
+    /* handle two date fields*/
+    @IBAction func dateEditing(sender: UITextField) {
+        let datePickerView  : UIDatePicker = UIDatePicker()
+        sender.inputView = datePickerView
+        timeSelected = sender
+        datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
+ //       datePicker.addTarget(self, action: "handleDatePicker:", forControlEvents: UIControlEvents.AllEvents)
+    }
+    
     // when datePicker changes
     @IBAction func datePickerAction(sender: UIDatePicker) {
-        updateSelectedDateFromDatePicker()
+     //   updateSelectedDateFromDatePicker()
+        if let timeSelected = self.timeSelected {     // mark: was selectedDate
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+            let strDate = dateFormatter.stringFromDate(sender.date)
+            //            selectedDate.text = strDate
+            timeSelected.text = strDate
+        }
     }
 
     // return key pressed while editing a text field.
@@ -92,14 +114,15 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
 
     // MARK: Helper methods
 
-    func updateSelectedDateFromDatePicker() {
-        if let selectedDate = self.selectedDate {
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-            var strDate = dateFormatter.stringFromDate(datePicker.date)
-            selectedDate.text = strDate
-        }
-    }
+//    func updateSelectedDateFromDatePicker() {
+//        if let timeSelected = self.timeSelected {     // mark: was selectedDate
+//            let dateFormatter = NSDateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+//            var strDate = dateFormatter.stringFromDate(sender.date)
+////            selectedDate.text = strDate
+//            timeSelected.text = strDate
+//        }
+//    }
 
     func configureView() {
         // Update the user interface for the detail item.
@@ -107,11 +130,11 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             if let titleField = self.titleField {
                 titleField.text = item.title
             }
-            let date = item.eventTime
-            if let datePicker = self.datePicker {
-                datePicker.setDate(date!, animated: false)
-                updateSelectedDateFromDatePicker()
-            }
+//            let date = item.eventTime
+//            if let datePicker = self.datePicker {
+//                datePicker.setDate(date!, animated: false)
+//                updateSelectedDateFromDatePicker()
+//            }
             if let descField = self.descField {
                 descField.text = item.desc
             }
@@ -130,7 +153,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 item.desc = descField.text ?? ""
                 print(descField.text)
                 item.createTime = NSDate()
-                item.eventTime = datePicker.date
+  //              item.eventTime = datePicker.date
             }
         } else { // cancelButton
 //            context.deleteObject(detailItem!)
