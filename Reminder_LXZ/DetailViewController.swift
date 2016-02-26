@@ -197,6 +197,16 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 item.createTime = NSDate()
                 //item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
                 //item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
+                
+                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
+                var notification = UILocalNotification()
+                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
+                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
+                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
+                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+ //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
+                notification.category = "TODO_CATEGORY"
+                UIApplication.sharedApplication().scheduleLocalNotification(notification)
             }
         } else {
             // cancelButton
