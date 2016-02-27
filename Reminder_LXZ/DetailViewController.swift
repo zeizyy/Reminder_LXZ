@@ -10,23 +10,28 @@ import UIKit
 import CoreData
 
 class DetailViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
-    let placeholder = "Description"
 
     // MARK: Properties
 
-    @IBOutlet weak var saveButton: UIBarButtonItem!
-    @IBOutlet weak var titleField: UITextField!
-    @IBOutlet weak var descField: UITextView!
-
-    // cells:
+    // cells
     @IBOutlet weak var titleCell: UITableViewCell!
     @IBOutlet weak var dueDateCell: UITableViewCell!
     @IBOutlet weak var remindDateCell: UITableViewCell!
     @IBOutlet weak var descCell: UITableViewCell!
 
-    let dateFormatter = NSDateFormatter()
-    var datePicker: UIDatePicker = UIDatePicker()
+    // fields
+    @IBOutlet weak var saveButton: UIBarButtonItem!
+    @IBOutlet weak var titleField: UITextField!
+    @IBOutlet weak var descField: UITextView!
 
+    // state variables
+    private var datePickerForDueDateVisible = false
+    private var datePickerForRemindDateVisible = false
+
+    // misc
+    let placeholder = "Description"
+    let dateFormatter: NSDateFormatter = NSDateFormatter()
+    var context: NSManagedObjectContext!
     var detailItem: EventMO? {
         didSet {
             // Update the view.
@@ -34,30 +39,18 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         }
     }
 
-    var context: NSManagedObjectContext!
 
     // MARK: Events
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        titleField.delegate = self
+        descField.delegate = self
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         self.configureView()
-        
-        titleField.delegate = self
-
-        descField.delegate = self
-
-        // add placeholder for textView
-        if (descField.text.isEmpty) {
-            descField.text = placeholder
-            descField.textColor = UIColor.lightGrayColor()
-        }
-
-        checkValidEvent()
-
-        datePicker.addTarget(self, action: "updateLabelFromDatePicker:", forControlEvents: UIControlEvents.ValueChanged)
+        self.checkValidEvent()
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -83,7 +76,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     }
 
     func textViewDidChange(textView: UITextView) {
-        checkValidEvent()
+        self.checkValidEvent()
     }
 
     override func didReceiveMemoryWarning() {
@@ -145,7 +138,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
 
     @IBAction func textFieldDidChange(sender: UITextField) {
-        checkValidEvent()
+        self.checkValidEvent()
     }
 
     // return key pressed while editing a text field.
@@ -159,44 +152,45 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         view.endEditing(true)
     }
 
-    func checkValidEvent() {
-        let title = titleField.text ?? ""
-        let desc = descField.text ?? ""
-        let descColor = descField.textColor == UIColor.lightGrayColor()
-        saveButton.enabled = !title.isEmpty && !desc.isEmpty && !descColor
-    }
-
-    // MARK: Helper methods
 
 
-    func configureView() {
-        // Update the user interface for the detail item.
-        if let item = self.detailItem {
-            if let titleField = self.titleField {
-                titleField.text = item.title
+    // MARK: TableViewController
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if (indexPath.row == tableView.indexPathForCell(dueDateCell)!.row) {
+            toggleDueDatePicker()
+            if !datePickerForDueDateVisible {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
-            //            let date = item.eventTime
-            //            if let datePicker = self.datePicker {
-            //                datePicker.setDate(date!, animated: false)
-            //                updateSelectedDateFromDatePicker()
-            //            }
-            if let cell = self.dueDateCell {
-                //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
-                let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
-                cell.textLabel!.text = "Due at"
-                cell.detailTextLabel!.text = selectedDateString
-                // TODO style the detailTextLabel text
+            //            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(dueDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        } else if (indexPath.row == tableView.indexPathForCell(remindDateCell)!.row) {
+            toggleRemindDatePicker()
+            if !datePickerForRemindDateVisible {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
-            if let cell = self.remindDateCell {
-                let reminderDateString = dateFormatter.stringFromDate(item.reminderTime)
-                cell.textLabel!.text = "Remind at"
-                cell.detailTextLabel!.text = reminderDateString
-            }
-            if let descField = self.descField {
-                descField.text = item.desc
-            }
+            //        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        } else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
     }
+
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+
+        if !datePickerForDueDateVisible && (indexPath.row == 2) {
+            return 0
+        } else if !datePickerForRemindDateVisible && (indexPath.row == 4) {
+            return 0
+        } else {
+            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        }
+    }
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 6
+    }
+
+
+
 
     // MARK: Navigation
 
@@ -234,12 +228,47 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             print("unable to save!")
         }
     }
-    
-    
-    // MARK Datepicker
-    private var datePickerForDueDateVisible = false
-    private var datePickerForRemindDateVisible = false
-    private func toggleRemindDatePicker(){
+
+    // MARK: Helper methods
+
+
+    func configureView() {
+        // Update the user interface for the detail item.
+        if let item = self.detailItem {
+            if let titleField = self.titleField {
+                titleField.text = item.title
+            }
+            //            let date = item.eventTime
+            //            if let datePicker = self.datePicker {
+            //                datePicker.setDate(date!, animated: false)
+            //                updateSelectedDateFromDatePicker()
+            //            }
+            if let cell = self.dueDateCell {
+                //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
+                let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
+                cell.textLabel!.text = "Due at"
+                cell.detailTextLabel!.text = selectedDateString
+                // TODO style the detailTextLabel text
+            }
+            if let cell = self.remindDateCell {
+                let reminderDateString = dateFormatter.stringFromDate(item.reminderTime)
+                cell.textLabel!.text = "Remind at"
+                cell.detailTextLabel!.text = reminderDateString
+            }
+            if let descField = self.descField {
+                descField.text = item.desc
+            }
+        }
+
+        // add placeholder for textView
+        if (descField.text.isEmpty) {
+            descField.text = placeholder
+            descField.textColor = UIColor.lightGrayColor()
+        }
+
+    }
+
+    private func toggleRemindDatePicker() {
         view.endEditing(true)
         datePickerForRemindDateVisible = !datePickerForRemindDateVisible
         datePickerForDueDateVisible = false
@@ -247,47 +276,20 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 //        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
         tableView.endUpdates()
     }
-    private func toggleDueDatePicker(){
+
+    private func toggleDueDatePicker() {
         view.endEditing(true)
         datePickerForDueDateVisible = !datePickerForDueDateVisible
         datePickerForRemindDateVisible = false
         tableView.beginUpdates()
         tableView.endUpdates()
     }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if (indexPath.row == tableView.indexPathForCell(dueDateCell)!.row){
-            toggleDueDatePicker()
-            if !datePickerForDueDateVisible{
-                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
-//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(dueDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-        } else
-        if (indexPath.row == tableView.indexPathForCell(remindDateCell)!.row) {
-toggleRemindDatePicker()
-            if !datePickerForRemindDateVisible{
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
-//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-        }
-        else {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)}
-    }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
-        if !datePickerForDueDateVisible && (indexPath.row == 2) {
-            return 0
-        }else if !datePickerForRemindDateVisible && (indexPath.row == 4){
-            return 0
-        }
-        else {
-            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
-        }
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+    private func checkValidEvent() {
+        let title = titleField.text ?? ""
+        let desc = descField.text ?? ""
+        let descColor = descField.textColor == UIColor.lightGrayColor()
+        saveButton.enabled = !title.isEmpty && !desc.isEmpty && !descColor
     }
 
 }
