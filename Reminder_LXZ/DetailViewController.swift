@@ -257,13 +257,14 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             }
             if let descField = self.descField {
                 descField.text = item.desc
-            }
-        }
 
-        // add placeholder for textView
-        if (descField.text.isEmpty) {
-            descField.text = placeholder
-            descField.textColor = UIColor.lightGrayColor()
+                // add placeholder for textView
+                if (descField.text.isEmpty) {
+                    descField.text = placeholder
+                    descField.textColor = UIColor.lightGrayColor()
+                }
+
+            }
         }
 
     }

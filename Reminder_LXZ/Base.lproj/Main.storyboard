@@ -242,13 +242,19 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="199.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="uSx-3v-J31">
-                                                    <rect key="frame" x="20" y="-201" width="560" height="446"/>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="uSx-3v-J31">
+                                                    <rect key="frame" x="8" y="8" width="584" height="183.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="uSx-3v-J31" secondAttribute="trailing" id="4hZ-9a-v37"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="uSx-3v-J31" secondAttribute="bottom" id="LuP-O3-bDo"/>
+                                                <constraint firstItem="uSx-3v-J31" firstAttribute="top" secondItem="A7c-WE-SQu" secondAttribute="topMargin" id="T9u-LV-QMZ"/>
+                                                <constraint firstItem="uSx-3v-J31" firstAttribute="leading" secondItem="A7c-WE-SQu" secondAttribute="leadingMargin" id="X7B-Ll-vCS"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -273,7 +279,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="descCell" destination="ybj-9r-2rc" id="TQm-xp-RZo"/>
-                        <outlet property="descField" destination="uSx-3v-J31" id="4HH-xh-MNl"/>
+                        <outlet property="descField" destination="uSx-3v-J31" id="098-Wq-s14"/>
                         <outlet property="dueDateCell" destination="3ge-u1-yQn" id="4GS-BK-Ijo"/>
                         <outlet property="remindDateCell" destination="wa6-VE-e03" id="Qiv-wc-boH"/>
                         <outlet property="saveButton" destination="XZD-cR-NMv" id="SYq-5k-lwq"/>
