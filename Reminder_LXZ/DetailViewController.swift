@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
+class DetailViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
     let placeholder = "Description"
 
     // MARK: Properties
@@ -17,15 +17,15 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
-    @IBOutlet weak var selectedDate: UITextField!
-    // due time for the event
-    @IBOutlet weak var reminderDate: UITextField!
-    // reminder time for the event
+
+    // cells:
+    @IBOutlet weak var titleCell: UITableViewCell!
+    @IBOutlet weak var dueDateCell: UITableViewCell!
+    @IBOutlet weak var remindDateCell: UITableViewCell!
+    @IBOutlet weak var descCell: UITableViewCell!
 
     let dateFormatter = NSDateFormatter()
-
-    var timeSelected: UITextField!
-    // help identify which time selected
+    var datePicker: UIDatePicker = UIDatePicker()
 
     var detailItem: EventMO? {
         didSet {
@@ -44,7 +44,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         self.configureView()
-
+        
         titleField.delegate = self
 
         descField.delegate = self
@@ -54,9 +54,10 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             descField.text = placeholder
             descField.textColor = UIColor.lightGrayColor()
         }
-        
+
         checkValidEvent()
 
+        datePicker.addTarget(self, action: "updateLabelFromDatePicker:", forControlEvents: UIControlEvents.ValueChanged)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -64,7 +65,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         titleField.becomeFirstResponder()
     }
 
-    
+
     // remove the hard-coded placeholder when textView is being edited
     func textViewDidBeginEditing(textView: UITextView) {
         if textView.textColor == UIColor.lightGrayColor() {
@@ -80,7 +81,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             textView.textColor = UIColor.lightGrayColor()
         }
     }
-    
+
     func textViewDidChange(textView: UITextView) {
         checkValidEvent()
     }
@@ -91,54 +92,62 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     }
 
 
-    /* handle two date fields*/
-    @IBAction func dateEditing(sender: UITextField) {
-        let datePickerView: UIDatePicker = UIDatePicker()
-        
-        // set default display of datePicker to current selected time
-        var displayTime  = NSDate()
-        if sender == self.selectedDate {
-            displayTime = (self.detailItem?.eventTime)!
-        } else if sender == self.reminderDate {
-            displayTime = (self.detailItem?.reminderTime)!
-        }
-        datePickerView.setDate(displayTime, animated: false)
-        
-        // link to datePicker
-        sender.inputView = datePickerView
-        timeSelected = sender
-        datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
-    }
+//    /* handle two date fields*/
+//    @IBAction func dateEditing(sender: UITextField) {
+//        let datePickerView: UIDatePicker = UIDatePicker()
+//        
+//        // set default display of datePicker to current selected time
+//        var displayTime  = NSDate()
+//        //        if sender == self.selectedDate {
+//        //            displayTime = (self.detailItem?.eventTime)!
+//        //        } else if sender == self.reminderDate {
+//        //            displayTime = (self.detailItem?.reminderTime)!
+//        //        }
+//        datePickerView.setDate(displayTime, animated: false)
+//        
+//        // link to datePicker
+//        sender.inputView = datePickerView
+//        timeSelected = sender
+//        datePickerView.addTarget(self, action: "datePickerAction:", forControlEvents: UIControlEvents.AllEvents)
+//    }
 
     // when datePicker changes
-    func datePickerAction(sender: UIDatePicker) {
+    @IBAction func updateLabelFromDatePicker(sender: UIDatePicker) {
         //   updateSelectedDateFromDatePicker()
-        if let timeSelected = self.timeSelected {
-            // mark: was selectedDate
-            let strDate = dateFormatter.stringFromDate(sender.date)
-            //            selectedDate.text = strDate
-            var displayString = ""
-
-            if timeSelected == self.reminderDate {
-                self.detailItem?.reminderTime = sender.date
-                displayString = "Remind me at: " + strDate
-            } else if timeSelected == self.selectedDate {
-                self.detailItem?.eventTime = sender.date
-                displayString = "Due at: " + strDate
-            }
-            timeSelected.text = displayString
-
+        //        if let timeSelected = self.timeSelected {
+        //            // mark: was selectedDate
+        //            let strDate = dateFormatter.stringFromDate(sender.date)
+        //            //            selectedDate.text = strDate
+        //            var displayString = ""
+        //
+        //            if timeSelected == self.reminderDate {
+        //                self.detailItem?.reminderTime = sender.date
+        //                displayString = "Remind me at: " + strDate
+        //            } else if timeSelected == self.selectedDate {
+        //                self.detailItem?.eventTime = sender.date
+        //                displayString = "Due at: " + strDate
+        //            }
+        //            timeSelected.text = displayString
+        //
+        //        }
+        let selectedRow = tableView.indexPathForSelectedRow!.row
+        switch selectedRow {
+        case tableView.indexPathForCell(dueDateCell)!.row:
+            dueDateCell.detailTextLabel?.text = dateFormatter.stringFromDate(sender.date)
+            self.detailItem?.eventTime = sender.date
+        case tableView.indexPathForCell(remindDateCell)!.row:
+            remindDateCell.detailTextLabel?.text = dateFormatter.stringFromDate(sender.date)
+            self.detailItem?.reminderTime = sender.date
+        default:
+            break
         }
     }
-    
-//    func textFieldDidBeginEditing(textField: UITextField) {
-//        checkValidEvent()
-//    }
-    
+
+
     @IBAction func textFieldDidChange(sender: UITextField) {
         checkValidEvent()
     }
-    
+
     // return key pressed while editing a text field.
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -149,8 +158,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     @IBAction func userTappedBackground(sender: AnyObject) {
         view.endEditing(true)
     }
-    
-    func checkValidEvent(){
+
+    func checkValidEvent() {
         let title = titleField.text ?? ""
         let desc = descField.text ?? ""
         let descColor = descField.textColor == UIColor.lightGrayColor()
@@ -171,14 +180,17 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             //                datePicker.setDate(date!, animated: false)
             //                updateSelectedDateFromDatePicker()
             //            }
-            if let selectedDate = self.selectedDate {
-   //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
+            if let cell = self.dueDateCell {
+                //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
                 let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
-                selectedDate.text = "Due at: " + selectedDateString
+                cell.textLabel!.text = "Due at"
+                cell.detailTextLabel!.text = selectedDateString
+                // TODO style the detailTextLabel text
             }
-            if let reminderDate = self.reminderDate {
+            if let cell = self.remindDateCell {
                 let reminderDateString = dateFormatter.stringFromDate(item.reminderTime)
-                reminderDate.text = "Remind me at: " + reminderDateString
+                cell.textLabel!.text = "Remind at"
+                cell.detailTextLabel!.text = reminderDateString
             }
             if let descField = self.descField {
                 descField.text = item.desc
@@ -195,32 +207,88 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 item.title = titleField.text ?? ""
                 item.desc = descField.text ?? ""
                 item.createTime = NSDate()
-                //item.reminderTime = dateFormatter.dateFromString(reminderDate.text!)
-                //item.eventTime = dateFormatter.dateFromString(selectedDate.text!)
-                
-                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
-                var notification = UILocalNotification()
-                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
-                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
-                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
-                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
- //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
-                notification.category = "TODO_CATEGORY"
-                UIApplication.sharedApplication().scheduleLocalNotification(notification)
+//                item.reminderTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
+//                item.eventTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
+
+//                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
+//                let notification = UILocalNotification()
+//                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
+//                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
+//                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
+//                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+//                //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
+//                notification.category = "TODO_CATEGORY"
+//                UIApplication.sharedApplication().scheduleLocalNotification(notification)
             }
         } else {
             // cancelButton
             //            context.deleteObject(detailItem!)
-            context.rollback()
+            let controller = segue.destinationViewController as! MasterViewController
+            controller.managedObjectContext!.rollback()
         }
 
         do {
-            try context.save()
+            let controller = segue.destinationViewController as! MasterViewController
+            try controller.managedObjectContext!.save()
         } catch {
             print("unable to save!")
         }
     }
+    
+    
+    // MARK Datepicker
+    private var datePickerForDueDateVisible = false
+    private var datePickerForRemindDateVisible = false
+    private func toggleRemindDatePicker(){
+        view.endEditing(true)
+        datePickerForRemindDateVisible = !datePickerForRemindDateVisible
+        datePickerForDueDateVisible = false
+        tableView.beginUpdates()
+//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        tableView.endUpdates()
+    }
+    private func toggleDueDatePicker(){
+        view.endEditing(true)
+        datePickerForDueDateVisible = !datePickerForDueDateVisible
+        datePickerForRemindDateVisible = false
+        tableView.beginUpdates()
+        tableView.endUpdates()
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if (indexPath.row == tableView.indexPathForCell(dueDateCell)!.row){
+            toggleDueDatePicker()
+            if !datePickerForDueDateVisible{
+                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            }
+//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(dueDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        } else
+        if (indexPath.row == tableView.indexPathForCell(remindDateCell)!.row) {
+toggleRemindDatePicker()
+            if !datePickerForRemindDateVisible{
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            }
+//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        }
+        else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)}
+    }
 
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        if !datePickerForDueDateVisible && (indexPath.row == 2) {
+            return 0
+        }else if !datePickerForRemindDateVisible && (indexPath.row == 4){
+            return 0
+        }
+        else {
+            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        }
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 6
+    }
 
 }
 
