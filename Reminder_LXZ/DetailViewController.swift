@@ -19,14 +19,14 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     @IBOutlet weak var remindDateCell: UITableViewCell!
     @IBOutlet weak var descCell: UITableViewCell!
 
+    // currently editing cell
+    private var cellBeingEdited: UITableViewCell? = nil
+
     // fields
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
 
-    // state variables
-    private var datePickerForDueDateVisible = false
-    private var datePickerForRemindDateVisible = false
 
     // misc
     let placeholder = "Description"
@@ -154,31 +154,38 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
 
 
+
     // MARK: TableViewController
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if (indexPath.row == tableView.indexPathForCell(dueDateCell)!.row) {
-            toggleDueDatePicker()
-            if !datePickerForDueDateVisible {
+        if indexPath.row == tableView.indexPathForCell(titleCell)!.row {
+            self.cellBeingEdited = self.titleCell
+        } else if (indexPath.row == tableView.indexPathForCell(dueDateCell)!.row) {
+            if cellBeingEdited == dueDateCell {
+                cellBeingEdited = nil
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            } else {
+                cellBeingEdited = dueDateCell
             }
-            //            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(dueDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+
         } else if (indexPath.row == tableView.indexPathForCell(remindDateCell)!.row) {
-            toggleRemindDatePicker()
-            if !datePickerForRemindDateVisible {
+            if cellBeingEdited == remindDateCell {
+                cellBeingEdited = nil
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            } else {
+                cellBeingEdited = remindDateCell
             }
-            //        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-        } else {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
         }
+        self.updateContentOfInputCells()
+
+
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-
-        if !datePickerForDueDateVisible && (indexPath.row == 2) {
+        if (cellBeingEdited != dueDateCell) && (indexPath.row == 2) {
             return 0
-        } else if !datePickerForRemindDateVisible && (indexPath.row == 4) {
+        } else if (cellBeingEdited != remindDateCell) && (indexPath.row == 4) {
             return 0
         } else {
             return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
@@ -188,8 +195,6 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
     }
-
-
 
 
     // MARK: Navigation
@@ -228,6 +233,8 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             print("unable to save!")
         }
     }
+
+
 
     // MARK: Helper methods
 
@@ -269,21 +276,35 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
     }
 
-    private func toggleRemindDatePicker() {
-        view.endEditing(true)
-        datePickerForRemindDateVisible = !datePickerForRemindDateVisible
-        datePickerForDueDateVisible = false
+    private func updateContentOfInputCells() {
+        // for title field
+        updateTitleCell()
+
+        // for datepickers
         tableView.beginUpdates()
-//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: tableView.indexPathForCell(remindDateCell)!.row+1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
         tableView.endUpdates()
     }
 
-    private func toggleDueDatePicker() {
-        view.endEditing(true)
-        datePickerForDueDateVisible = !datePickerForDueDateVisible
-        datePickerForRemindDateVisible = false
-        tableView.beginUpdates()
-        tableView.endUpdates()
+
+    private func updateTitleCell() {
+        if cellBeingEdited == titleCell {
+            self.showTitleFieldAndHideLabel()
+        } else {
+            hideTitleFieldAndShowLabel()
+        }
+    }
+
+    private func hideTitleFieldAndShowLabel() {
+        titleField.hidden = true
+        titleCell.textLabel?.hidden = false
+        titleCell.textLabel?.text = titleField.text
+        titleField.resignFirstResponder()
+    }
+
+    private func showTitleFieldAndHideLabel() {
+        titleField.hidden = false
+        titleCell.textLabel?.hidden = true
+        titleField.becomeFirstResponder()
     }
 
     private func checkValidEvent() {
@@ -292,6 +313,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         let descColor = descField.textColor == UIColor.lightGrayColor()
         saveButton.enabled = !title.isEmpty && !desc.isEmpty && !descColor
     }
+
 
 }
 
