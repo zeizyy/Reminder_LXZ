@@ -33,10 +33,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         dateFormatterLong.dateFormat = "yyyy'-'MM'-'dd HH':'mm':'ss"
 
     }
-    
-    func test(){
-        print("1")
-    }
 
     override func viewWillAppear(animated: Bool) {
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
@@ -55,8 +51,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
         // If appropriate, configure the new managed object.
         // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-        //        newManagedObject.setValue("New Title", forKey: "title")
-        //        newManagedObject.setValue(NSDate(), forKey: "createTime")
 
         // use model to hold data instead of KVC
         newManagedObject.title = ""
@@ -73,17 +67,14 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
 
         if segue.identifier == "showDetail" {
-            let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let object = self.fetchedResultsController.objectAtIndexPath(indexPath)
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-
-                // print("we're at master view: " + dateFormatter.stringFromDate(((object as? EventMO)?.reminderTime)!))
+                
                 // pass the object to the target controller
                 controller.detailItem = object as? EventMO
             }
-//            controller.context = self.fetchedResultsController.managedObjectContext
-
+            
             // this overrides the cancel button set in the storyboard
             //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
             //            controller.navigationItem.leftItemsSupplementBackButton = true
@@ -91,13 +82,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         } else if segue.identifier == "createDetail" {
             let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             controller.detailItem = insertNewObject(sender!)
-
-            // this overrides the cancel button set in the storyboard
-            //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-            //            controller.navigationItem.leftItemsSupplementBackButton = true
-
-//            controller.context = self.fetchedResultsController.managedObjectContext
-
         }
 
 
@@ -109,7 +93,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     // MARK: - Table View
-
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.fetchedResultsController.sections?.count ?? 0
     }
@@ -236,6 +219,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.tableView.endUpdates()
     }
 
+    // check time to fire out popup notifications
     func checkReminder(){
         let currentTime = dateFormatterLong.stringFromDate(NSDate())
         for event in self.fetchedResultsController.fetchedObjects as! [EventMO] {
@@ -256,14 +240,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                         print("unable to save")
                     }
                 }
-//                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 alert.addAction(postponeAction)
                 alert.addAction(addAction)
                 self.presentViewController(alert, animated: true, completion: nil)
             }
         }
-        
-        
     }
     /*
     // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
