@@ -64,3 +64,5 @@ fastlane/screenshots
 
 # AppCode
 .idea
+
+project.pbxproj
