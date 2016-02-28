@@ -147,14 +147,6 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         return true;
     }
 
-    // dismiss keyboard when user taps background
-    @IBAction func userTappedBackground(sender: AnyObject) {
-        view.endEditing(true)
-    }
-
-
-
-
     // MARK: TableViewController
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

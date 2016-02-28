@@ -61,8 +61,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // use model to hold data instead of KVC
         newManagedObject.title = ""
         newManagedObject.desc = ""
-        newManagedObject.eventTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
-        newManagedObject.reminderTime = NSDate()
+        newManagedObject.eventTime = NSDate()
+        newManagedObject.reminderTime = NSDate(timeIntervalSinceNow: NSTimeInterval(3600))
         newManagedObject.createTime = NSDate()
         return newManagedObject
     }
@@ -237,12 +237,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     func checkReminder(){
-        print("---------------")
         let currentTime = dateFormatterLong.stringFromDate(NSDate())
-        print(currentTime)
         for event in self.fetchedResultsController.fetchedObjects as! [EventMO] {
             let reminderTime = dateFormatterLong.stringFromDate(event.reminderTime)
-            print(reminderTime)
             if reminderTime == currentTime {
                 let message = event.title + " is due!"
                 let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
