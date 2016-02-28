@@ -31,7 +31,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     // misc
     let placeholder = "Description"
     let dateFormatter: NSDateFormatter = NSDateFormatter()
-    var context: NSManagedObjectContext!
+//    var context: NSManagedObjectContext!
     var detailItem: EventMO? {
         didSet {
             // Update the view.

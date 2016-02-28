@@ -82,7 +82,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 // pass the object to the target controller
                 controller.detailItem = object as? EventMO
             }
-            controller.context = self.fetchedResultsController.managedObjectContext
+//            controller.context = self.fetchedResultsController.managedObjectContext
 
             // this overrides the cancel button set in the storyboard
             //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
@@ -96,7 +96,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             //            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
             //            controller.navigationItem.leftItemsSupplementBackButton = true
 
-            controller.context = self.fetchedResultsController.managedObjectContext
+//            controller.context = self.fetchedResultsController.managedObjectContext
 
         }
 
