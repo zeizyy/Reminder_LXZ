@@ -20,7 +20,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
+//        self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
         //        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
         //        self.navigationItem.rightBarButtonItem = addButton
@@ -31,7 +31,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "checkReminder", userInfo: nil, repeats: true)
         dateFormatterShort.dateFormat = "yyyy-MM-dd HH:mm"
         dateFormatterLong.dateFormat = "yyyy'-'MM'-'dd HH':'mm':'ss"
+        self.becomeFirstResponder()
 
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -91,6 +96,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     @IBAction func unwindToEventList(sender: UIStoryboardSegue) {
     
     }
+    
+    
 
     // MARK: - Table View
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

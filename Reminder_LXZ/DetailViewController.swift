@@ -24,6 +24,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
     // fields
     @IBOutlet weak var saveButton: UIBarButtonItem!
+    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var descField: UITextView!
 
@@ -57,7 +58,16 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         super.viewDidAppear(true)
         titleField.becomeFirstResponder()
     }
-
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
+        if motion == .MotionShake {
+            self.performSegueWithIdentifier("cancel", sender: nil)
+        }
+    }
 
     // remove the hard-coded placeholder when textView is being edited
     func textViewDidBeginEditing(textView: UITextView) {
@@ -73,6 +83,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             textView.text = placeholder
             textView.textColor = UIColor.lightGrayColor()
         }
+        
     }
 
     func textViewDidChange(textView: UITextView) {

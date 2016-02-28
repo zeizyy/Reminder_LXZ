@@ -350,7 +350,7 @@
 				INFOPLIST_FILE = Reminder_LXZ/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.examplezyy.Reminder-LXZ";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.Reminder-LXZ";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -365,7 +365,7 @@
 				INFOPLIST_FILE = Reminder_LXZ/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.examplezyy.Reminder-LXZ";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.Reminder-LXZ";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
