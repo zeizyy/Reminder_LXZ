@@ -13,8 +13,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
-
-
+    var timer = NSTimer()
+    let dateFormatterShort = NSDateFormatter()
+    let dateFormatterLong = NSDateFormatter()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -26,6 +28,14 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
         }
+        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "checkReminder", userInfo: nil, repeats: true)
+        dateFormatterShort.dateFormat = "yyyy-MM-dd HH:mm"
+        dateFormatterLong.dateFormat = "yyyy'-'MM'-'dd HH':'mm':'ss"
+
+    }
+    
+    func test(){
+        print("1")
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -68,8 +78,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 let object = self.fetchedResultsController.objectAtIndexPath(indexPath)
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
 
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
                 // print("we're at master view: " + dateFormatter.stringFromDate(((object as? EventMO)?.reminderTime)!))
                 // pass the object to the target controller
                 controller.detailItem = object as? EventMO
@@ -97,29 +105,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     // getting back to masterView i.e. receiving segues
     @IBAction func unwindToEventList(sender: UIStoryboardSegue) {
-        //        // if the seque is coming from detail view AND the item is set, then save the edit
-        //        if let sourceViewController = sender.sourceViewController as? DetailViewController, detailItem = sourceViewController.detailItem {
-        //            //             Add a new event
-        ////            if let _ = tableView.indexPathForSelectedRow {
-        //                let context = self.fetchedResultsController.managedObjectContext
-        //
-        //                // save any changed made to the detailItem:EventMO in detailView
-        //                do {
-        //                    try context.save()
-        //                } catch {
-        //                }
-        ////            } else {
-        //                //                insertNewObject(self, detailItem: detailItem)
-        ////            }
-        //        } else {
-        //            let context = self.fetchedResultsController.managedObjectContext
-        //
-        //            context.deleteObject(sender.sourceViewController.detailItem)
-        //            do {
-        //                try context.save()
-        //            } catch {
-        //            }
-        //        }
+    
     }
 
     // MARK: - Table View
@@ -161,8 +147,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             }
         }
     }
-
-
+    
     /*
     // Override to support rearranging the table view.
     override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
@@ -172,11 +157,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
 
     func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+        
         let object = self.fetchedResultsController.objectAtIndexPath(indexPath) as! EventMO
         cell.textLabel!.text = object.title
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH':'mm':'ss"
-        cell.detailTextLabel!.text = dateFormatter.stringFromDate(object.eventTime!)
+        
+        cell.detailTextLabel!.text = dateFormatterLong.stringFromDate(object.eventTime!)
     }
 
     // MARK: - Fetched results controller
@@ -195,7 +180,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         fetchRequest.fetchBatchSize = 20
 
         // Edit the sort key as appropriate.
-        let sortDescriptor = NSSortDescriptor(key: "createTime", ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: "eventTime", ascending: true)
 
         fetchRequest.sortDescriptors = [sortDescriptor]
 
@@ -251,6 +236,38 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.tableView.endUpdates()
     }
 
+    func checkReminder(){
+        print("---------------")
+        let currentTime = dateFormatterLong.stringFromDate(NSDate())
+        print(currentTime)
+        for event in self.fetchedResultsController.fetchedObjects as! [EventMO] {
+            let reminderTime = dateFormatterLong.stringFromDate(event.reminderTime)
+            print(reminderTime)
+            if reminderTime == currentTime {
+                let message = event.title + " is due!"
+                let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+                let postponeAction = UIAlertAction(title: "Postpone",style: .Default) {
+                    UIAlertAction in
+                    event.reminderTime = event.reminderTime.dateByAddingTimeInterval(NSTimeInterval(3600))
+                }
+                let addAction = UIAlertAction(title: "Dismiss", style: .Default){
+                    UIAlertAction in
+                    self.managedObjectContext?.deleteObject(event)
+                    do {
+                        try self.managedObjectContext?.save()
+                    } catch {
+                        print("unable to save")
+                    }
+                }
+//                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+                alert.addAction(postponeAction)
+                alert.addAction(addAction)
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+        }
+        
+        
+    }
     /*
     // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
     

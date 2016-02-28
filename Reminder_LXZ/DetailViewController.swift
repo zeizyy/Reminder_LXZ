@@ -200,24 +200,23 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     // MARK: Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
         if saveButton === sender {
             if let item = self.detailItem {
                 item.title = titleField.text ?? ""
                 item.desc = descField.text ?? ""
                 item.createTime = NSDate()
-//                item.reminderTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
-//                item.eventTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
+                item.reminderTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
+                item.eventTime = dateFormatter.dateFromString(dueDateCell.detailTextLabel!.text!)
 
-//                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
-//                let notification = UILocalNotification()
-//                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
-//                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
-//                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
-//                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
-//                //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
-//                notification.category = "TODO_CATEGORY"
-//                UIApplication.sharedApplication().scheduleLocalNotification(notification)
+                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
+                let notification = UILocalNotification()
+                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
+                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
+                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
+                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+                //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
+                notification.category = "TODO_CATEGORY"
+                UIApplication.sharedApplication().scheduleLocalNotification(notification)
             }
         } else {
             // cancelButton
