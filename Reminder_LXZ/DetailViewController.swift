@@ -51,8 +51,8 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
         titleField.delegate = self
         descField.delegate = self
-        titleField.hidden = true
-        descField.hidden = true
+//        titleField.hidden = true
+//        descField.hidden = true
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         self.configureView()
@@ -288,15 +288,13 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         if let item = self.detailItem {
             if let titleField = self.titleField {
                 titleField.text = item.title
-                self.titleCell.textLabel?.text = item.title
+                if item.title.isEmpty {
+                    titleCell.textLabel?.text = "Title"
+                    titleCell.textLabel?.hidden = true
+                }
             }
-            //            let date = item.eventTime
-            //            if let datePicker = self.datePicker {
-            //                datePicker.setDate(date!, animated: false)
-            //                updateSelectedDateFromDatePicker()
-            //            }
+        
             if let cell = self.dueDateCell {
-                //             print("hi there: " + dateFormatter.stringFromDate(item.eventTime))
                 let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
                 cell.textLabel!.text = "Due at"
                 cell.detailTextLabel!.text = selectedDateString
@@ -317,8 +315,6 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                     descField.text = placeholder
                     descField.textColor = UIColor.lightGrayColor()
                 }
-                
-                self.descCell.textLabel?.text = item.desc
 
             }
         
@@ -352,7 +348,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     private func hideTitleFieldAndShowLabel() {
         titleField.hidden = true
         titleCell.textLabel?.hidden = false
-        titleCell.textLabel?.text = titleField.text
+        if let titleField = titleField {
+            titleCell.textLabel?.text = titleField.text!.isEmpty ? "Title" : titleField.text
+            titleCell.textLabel?.textColor = titleField.text!.isEmpty ? UIColor.lightGrayColor() : UIColor.blackColor()
+        }
+        
         titleField.resignFirstResponder()
     }
 
@@ -372,6 +372,9 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     private func hideDescFieldAndShowLabel() {
         descField.hidden = true
         descCell.textLabel?.hidden = false
+        if let descField = descField {
+           descCell.textLabel?.textColor = descField.textColor
+        }
         descCell.textLabel?.text = descField.text
         descField.resignFirstResponder()
     }
