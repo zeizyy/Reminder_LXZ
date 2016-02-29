@@ -8,9 +8,10 @@
         </attribute>
         <attribute name="reminderTime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <userInfo/>
     </entity>
     <elements>
-        <element name="Event" positionX="261" positionY="189" width="128" height="120"/>
+        <element name="Event" positionX="261" positionY="189" width="128" height="135"/>
     </elements>
 </model>

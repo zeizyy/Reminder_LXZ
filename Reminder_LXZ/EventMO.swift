@@ -17,6 +17,7 @@ class EventMO: NSManagedObject {
     @NSManaged var eventTime: NSDate!       // when the event due
     @NSManaged var reminderTime: NSDate!    // when the reminder should be triggered
     @NSManaged var createTime: NSDate!
+    @NSManaged var uuid: String!
     
 //    convenience init(title: String!, desc: String?, eventTime: NSDate!, reminderTime: NSDate!, createTime: NSDate!, entity: NSEntityDescription, insertIntoManagedObjectContext context : NSManagedObjectContext!){
 //        self.init(entity: entity, insertIntoManagedObjectContext: context)

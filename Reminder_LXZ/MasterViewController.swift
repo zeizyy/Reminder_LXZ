@@ -125,6 +125,17 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             let context = self.fetchedResultsController.managedObjectContext
+            
+            let item = self.fetchedResultsController.objectAtIndexPath(indexPath) as! EventMO
+            for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
+                if (notification.userInfo!["UUID"] as! String == item.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+                    print("deleting: " + item.uuid)
+                    break
+                }
+            }
+        
+            
             context.deleteObject(self.fetchedResultsController.objectAtIndexPath(indexPath) as! NSManagedObject)
 
             do {
@@ -213,6 +224,19 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         case .Insert:
             tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
         case .Delete:
+            // remove reminder
+//            print("object id: "+object.objectID.URIRepresentation().absoluteString)
+//
+//            for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
+//                if (notification.userInfo!["uid"] as! String == object.objectID.URIRepresentation().absoluteString) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+//                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+////                    break
+//                    print("??? " + object.objectID.URIRepresentation().absoluteString);
+//                }
+//                print("uid: ")
+//                print(notification.userInfo!["uid"] as! String)
+//            }
+            
             tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
         case .Update:
             self.configureCell(tableView.cellForRowAtIndexPath(indexPath!)!, atIndexPath: indexPath!)

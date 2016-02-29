@@ -12,7 +12,7 @@ import CoreData
 class DetailViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
 
     // MARK: Properties
-
+    let ITEMS_KEY = "Event"
     // cells
     @IBOutlet weak var titleCell: UITableViewCell!
     @IBOutlet weak var dueDateCell: UITableViewCell!
@@ -216,16 +216,20 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                 item.createTime = NSDate()
                 item.reminderTime = dateFormatter.dateFromString(remindDateCell.detailTextLabel!.text!)
                 item.eventTime = dateFormatter.dateFromString(dueDateCell.detailTextLabel!.text!)
-
-                let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
-                let notification = UILocalNotification()
-                notification.alertBody = "Todo Item \"\(item.title)\" Is due on \(eventTimeString)"  // text that \ill be displayed in the notification
-                notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
-                notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
-                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
-                //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
-                notification.category = "TODO_CATEGORY"
-                UIApplication.sharedApplication().scheduleLocalNotification(notification)
+                if (item.uuid == nil) {      // new object
+                    item.uuid = NSUUID().UUIDString
+                } else {                     // editing object->delete old notification
+                    for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
+                        print(notification.userInfo)
+                        if let uuid = notification.userInfo!["UUID"] {
+                        if (uuid as! String == item.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+                            UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+                            print("editing...delete: " + item.uuid)
+                            break
+                        }
+                        }
+                    }
+                }
             }
         } else {
             // cancelButton
@@ -240,6 +244,29 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         } catch {
             print("unable to save!")
         }
+        
+        if saveButton === sender {
+            if let item = self.detailItem {
+                var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? Dictionary()
+                todoDictionary[item.uuid] = ["deadline": item.eventTime, "title": item.title, "UUID": item.uuid] // store NSData representation of todo item in dictionary with UUID as key
+                NSUserDefaults.standardUserDefaults().setObject(todoDictionary, forKey: ITEMS_KEY)
+
+            let notification = UILocalNotification()
+            let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
+            notification.alertBody = "Todo Item \"\(item.title)\" will be due on \(eventTimeString)"  // text that \ill be displayed in the notification
+            notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
+            notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
+            notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+            //               notification.userInfo = ["UUID": item.UUID, ] // assign a unique identifier to the notification so that we can retrieve it later
+//            let userInfoCurrent = notification.userInfo as! [String: AnyObject]
+            
+            //let uid = userInfoCurrent["uid"]! as! String
+            notification.userInfo = ["UUID": item.uuid, ]
+            print("saving: "+item.uuid)
+            notification.category = "TODO_CATEGORY"
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+            }
+            }
     }
 
 
