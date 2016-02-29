@@ -18,7 +18,9 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     @IBOutlet weak var dueDateCell: UITableViewCell!
     @IBOutlet weak var remindDateCell: UITableViewCell!
     @IBOutlet weak var descCell: UITableViewCell!
-
+    @IBOutlet weak var dueDatePicker: UIDatePicker!
+    @IBOutlet weak var remindDatePicker: UIDatePicker!
+    
     // currently editing cell
     private var cellBeingEdited: UITableViewCell? = nil
 
@@ -55,6 +57,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
         self.configureView()
         self.checkValidEvent()
+        
+        descCell.textLabel?.numberOfLines = 0
+        descCell.textLabel?.lineBreakMode = .ByWordWrapping
+        descCell.textLabel?.textAlignment = .Left
+        
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -279,6 +286,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         if let item = self.detailItem {
             if let titleField = self.titleField {
                 titleField.text = item.title
+                self.titleCell.textLabel?.text = item.title
             }
             //            let date = item.eventTime
             //            if let datePicker = self.datePicker {
@@ -290,12 +298,14 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                 let selectedDateString = dateFormatter.stringFromDate(item.eventTime)
                 cell.textLabel!.text = "Due at"
                 cell.detailTextLabel!.text = selectedDateString
+                dueDatePicker.date = item.eventTime
                 // TODO style the detailTextLabel text
             }
             if let cell = self.remindDateCell {
                 let reminderDateString = dateFormatter.stringFromDate(item.reminderTime)
                 cell.textLabel!.text = "Remind at"
                 cell.detailTextLabel!.text = reminderDateString
+                remindDatePicker.date = item.reminderTime
             }
             if let descField = self.descField {
                 descField.text = item.desc
@@ -305,8 +315,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                     descField.text = placeholder
                     descField.textColor = UIColor.lightGrayColor()
                 }
+                
+                self.descCell.textLabel?.text = item.desc
 
             }
+        
         }
 
     }
