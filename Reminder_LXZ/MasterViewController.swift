@@ -226,6 +226,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.tableView.endUpdates()
     }
 
+
     // check time to fire out popup notifications
     func checkReminder(){
         let currentTime = dateFormatterLong.stringFromDate(NSDate())

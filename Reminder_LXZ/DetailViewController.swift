@@ -55,6 +55,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
         self.configureView()
         self.checkValidEvent()
+        
+        descCell.textLabel?.numberOfLines = 0
+        descCell.textLabel?.lineBreakMode = .ByWordWrapping
+        descCell.textLabel?.textAlignment = .Left
+        
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -252,6 +257,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         if let item = self.detailItem {
             if let titleField = self.titleField {
                 titleField.text = item.title
+                self.titleCell.textLabel?.text = item.title
             }
             //            let date = item.eventTime
             //            if let datePicker = self.datePicker {
@@ -278,8 +284,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                     descField.text = placeholder
                     descField.textColor = UIColor.lightGrayColor()
                 }
+                
+                self.descCell.textLabel?.text = item.desc
 
             }
+        
         }
 
     }
