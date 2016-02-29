@@ -30,6 +30,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
 
     // misc
+    let picker = UIDatePicker()
     let placeholder = "Description"
     let dateFormatter: NSDateFormatter = NSDateFormatter()
 //    var context: NSManagedObjectContext!
@@ -48,6 +49,8 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
         titleField.delegate = self
         descField.delegate = self
+        titleField.hidden = true
+        descField.hidden = true
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         self.configureView()
@@ -75,6 +78,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             textView.text = nil
             textView.textColor = UIColor.blackColor()
         }
+        self.updateDatePickers()
     }
 
     // add the hard-coded placeholder when end editing
@@ -134,6 +138,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         //            timeSelected.text = displayString
         //
         //        }
+//        let datePickerRow = tableView.indexPathForCell(sender.).row
         let selectedRow = tableView.indexPathForSelectedRow!.row
         switch selectedRow {
         case tableView.indexPathForCell(dueDateCell)!.row:
@@ -168,6 +173,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                 cellBeingEdited = nil
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
             } else {
+                picker.becomeFirstResponder()
                 cellBeingEdited = dueDateCell
             }
 
@@ -178,11 +184,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             } else {
                 cellBeingEdited = remindDateCell
             }
-
+        } else if indexPath.row == tableView.indexPathForCell(descCell)!.row {
+            self.cellBeingEdited = self.descCell
         }
+        
         self.updateContentOfInputCells()
-
-
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -281,8 +287,13 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
     private func updateContentOfInputCells() {
         // for title field
         updateTitleCell()
+        updateDescCell()
 
         // for datepickers
+        updateDatePickers()
+    }
+    
+    private func updateDatePickers(){
         tableView.beginUpdates()
         tableView.endUpdates()
     }
@@ -308,6 +319,27 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
         titleCell.textLabel?.hidden = true
         titleField.becomeFirstResponder()
     }
+    
+    private func updateDescCell() {
+        if cellBeingEdited == descCell {
+            self.showDescFieldAndHideLabel()
+        } else {
+            hideDescFieldAndShowLabel()
+        }
+    }
+    private func hideDescFieldAndShowLabel() {
+        descField.hidden = true
+        descCell.textLabel?.hidden = false
+        descCell.textLabel?.text = descField.text
+        descField.resignFirstResponder()
+    }
+    
+    private func showDescFieldAndHideLabel() {
+        descField.hidden = false
+        descCell.textLabel?.hidden = true
+        descField.becomeFirstResponder()
+    }
+
 
     private func checkValidEvent() {
         let title = titleField.text ?? ""
