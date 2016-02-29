@@ -9,7 +9,6 @@ An IOS Renminder App by Vivian Liu, Qian Xiong and Yuanyang Zheng.
 - Handles rotation appropriately.
 - Show a pop up alert when an event is due while the app is open. Users are able to Dismiss (delete the event) or Postpone (change the reminder day time to one hour later) the event.
 - Swipe left on the master page brings up the Delete button.
-- 
 
 ## Extra Features
 - Data Persistence achieved via iOS Core Data.
