@@ -227,11 +227,11 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                     item.uuid = NSUUID().UUIDString
                 } else {                     // editing object->delete old notification
                     for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
-                        print(notification.userInfo)
+                        //print(notification.userInfo)
                         if let uuid = notification.userInfo!["UUID"] {
                         if (uuid as! String == item.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                             UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-                            print("editing...delete: " + item.uuid)
+                            //print("editing...delete: " + item.uuid)
                             break
                         }
                         }
@@ -260,7 +260,9 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
 
             let notification = UILocalNotification()
             let eventTimeString = dateFormatter.stringFromDate(item.eventTime)
+ //           let reminderTimeString = dateFormatter.stringFromDate(item.reminderTime)
             notification.alertBody = "Todo Item \"\(item.title)\" will be due on \(eventTimeString)"  // text that \ill be displayed in the notification
+            //notification.alertBody = "Todo Item \"\(item.title)\" is alerted on \(reminderTimeString)"  // debug use
             notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
             notification.fireDate = item.reminderTime // todo item due date (when notification will be fired)
             notification.soundName = UILocalNotificationDefaultSoundName // play default sound
@@ -269,7 +271,7 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
             
             //let uid = userInfoCurrent["uid"]! as! String
             notification.userInfo = ["UUID": item.uuid, ]
-            print("saving: "+item.uuid)
+            //print("saving: "+item.uuid)
             notification.category = "TODO_CATEGORY"
             UIApplication.sharedApplication().scheduleLocalNotification(notification)
             }

@@ -130,7 +130,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
                 if (notification.userInfo!["UUID"] as! String == item.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                     UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-                    print("deleting: " + item.uuid)
+                    //print("deleting: " + item.uuid)
                     break
                 }
             }
