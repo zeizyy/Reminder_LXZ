@@ -151,7 +151,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let object = self.fetchedResultsController.objectAtIndexPath(indexPath) as! EventMO
         cell.textLabel!.text = object.title
         
-        cell.detailTextLabel!.text = dateFormatterLong.stringFromDate(object.eventTime!)
+        cell.detailTextLabel!.text = dateFormatterShort.stringFromDate(object.eventTime!)
     }
 
     // MARK: - Fetched results controller
