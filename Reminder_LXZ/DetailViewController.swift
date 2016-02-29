@@ -314,6 +314,13 @@ class DetailViewController: UITableViewController, UITextFieldDelegate, UITextVi
                 if (descField.text.isEmpty) {
                     descField.text = placeholder
                     descField.textColor = UIColor.lightGrayColor()
+                    descField.hidden = true
+                    descCell.textLabel?.text = placeholder
+                    descCell.textLabel?.textColor = UIColor.lightGrayColor()
+                } else {
+                    descField.hidden = true
+                    descCell.textLabel?.text = item.desc
+                    descCell.textLabel?.hidden = false
                 }
 
             }
